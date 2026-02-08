@@ -6,9 +6,20 @@ import { AppConfig, FeedsConfig } from './types';
 dotenv.config();
 
 function loadFeeds(): FeedsConfig {
-  const feedsPath = path.join(__dirname, '..', 'feeds.json');
-  const raw = fs.readFileSync(feedsPath, 'utf-8');
-  return JSON.parse(raw) as FeedsConfig;
+  // Tenta vários caminhos (local: __dirname/.., Docker: /app, cwd)
+  const candidates = [
+    path.join(__dirname, '..', 'feeds.json'),
+    path.join(process.cwd(), 'feeds.json'),
+    '/app/feeds.json',
+  ];
+  for (const p of candidates) {
+    if (fs.existsSync(p)) {
+      console.log(`[config] feeds.json encontrado em: ${p}`);
+      const raw = fs.readFileSync(p, 'utf-8');
+      return JSON.parse(raw) as FeedsConfig;
+    }
+  }
+  throw new Error('feeds.json not found! Tried: ' + candidates.join(', '));
 }
 
 function requiredEnv(key: string): string {

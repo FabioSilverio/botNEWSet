@@ -1,0 +1,9 @@
+node_modules
+dist
+.env
+.git
+.bot.pid
+.runner.pid
+.runner.log
+*.log
+.sent-cache.json
