@@ -3,7 +3,10 @@ import * as path from 'path';
 import { NewsItem } from './types';
 import { deduplicateBySimilarity } from './dedup';
 
-const SENT_CACHE_FILE = path.join(__dirname, '..', '.sent-cache.json');
+// Usa /tmp no servidor (Railway), ou pasta do projeto local
+const SENT_CACHE_FILE = process.env.RAILWAY_ENVIRONMENT
+  ? '/tmp/.sent-cache.json'
+  : path.join(__dirname, '..', '.sent-cache.json');
 
 function loadSentCache(): Set<string> {
   try {
